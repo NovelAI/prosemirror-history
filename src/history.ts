@@ -366,8 +366,8 @@ export function closeHistory(tr: Transaction) {
   return tr.setMeta(closeHistoryKey, true)
 }
 
-const historyKey = new PluginKey("history")
-const closeHistoryKey = new PluginKey("closeHistory")
+export const historyKey = new PluginKey("history")
+export const closeHistoryKey = new PluginKey("closeHistory")
 
 interface HistoryOptions {
   /// The amount of history events that are collected before the
@@ -455,4 +455,14 @@ export function undoDepth(state: EditorState) {
 export function redoDepth(state: EditorState) {
   let hist = historyKey.getState(state)
   return hist ? hist.undone.eventCount : 0
+}
+
+export function clear(state) {
+  let hist = historyKey.getState(state)
+  if (hist) {
+    hist.done = Branch.empty
+    hist.undone = Branch.empty
+    hist.prevRanges = 0
+    hist.prevTime = 0
+  }
 }
