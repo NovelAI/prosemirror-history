@@ -35,6 +35,6 @@
   },
   "scripts": {
     "test": "pm-runtests",
-    "prepare": "pm-buildhelper src/history.ts"
+    "build": "pm-buildhelper src/history.ts"
   }
 }
