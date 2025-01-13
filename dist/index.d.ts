@@ -10,8 +10,10 @@ interface HistoryOptions {
 declare function history(config?: HistoryOptions): Plugin;
 declare const undo: Command;
 declare const redo: Command;
+declare const undoNoScroll: Command;
+declare const redoNoScroll: Command;
 declare function undoDepth(state: EditorState): any;
 declare function redoDepth(state: EditorState): any;
 declare function clear(state: any): void;
 
-export { clear, closeHistory, closeHistoryKey, history, historyKey, redo, redoDepth, undo, undoDepth };
+export { clear, closeHistory, closeHistoryKey, history, historyKey, redo, redoDepth, redoNoScroll, undo, undoDepth, undoNoScroll };

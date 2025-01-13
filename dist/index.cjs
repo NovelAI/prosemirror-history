@@ -1,23 +1,14 @@
 'use strict';
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 var RopeSequence = require('rope-sequence');
 var prosemirrorTransform = require('prosemirror-transform');
 var prosemirrorState = require('prosemirror-state');
-function _interopDefaultLegacy(e) {
-  return e && _typeof(e) === 'object' && 'default' in e ? e : {
-    'default': e
-  };
-}
-var RopeSequence__default = _interopDefaultLegacy(RopeSequence);
 var max_empty_items = 500;
 var Branch = function () {
   function Branch(items, eventCount) {
@@ -25,7 +16,7 @@ var Branch = function () {
     this.items = items;
     this.eventCount = eventCount;
   }
-  _createClass(Branch, [{
+  return _createClass(Branch, [{
     key: "popEvent",
     value: function popEvent(state, preserveItems) {
       var _this = this;
@@ -201,12 +192,11 @@ var Branch = function () {
           mapFrom--;
         }
       }, this.items.length, 0);
-      return new Branch(RopeSequence__default["default"].from(items.reverse()), events);
+      return new Branch(RopeSequence.from(items.reverse()), events);
     }
   }]);
-  return Branch;
 }();
-Branch.empty = new Branch(RopeSequence__default["default"].empty, 0);
+Branch.empty = new Branch(RopeSequence.empty, 0);
 function cutOffEvents(items, n) {
   var cutPoint;
   items.forEach(function (item, i) {
@@ -225,7 +215,7 @@ var Item = function () {
     this.selection = selection;
     this.mirrorOffset = mirrorOffset;
   }
-  _createClass(Item, [{
+  return _createClass(Item, [{
     key: "merge",
     value: function merge(other) {
       if (this.step && other.step && !other.selection) {
@@ -234,7 +224,6 @@ var Item = function () {
       }
     }
   }]);
-  return Item;
 }();
 var HistoryState = _createClass(function HistoryState(done, undone, prevRanges, prevTime, prevComposition) {
   _classCallCheck(this, HistoryState);
@@ -254,11 +243,11 @@ function applyTransaction(history, state, tr, options) {
   if (tr.steps.length == 0) {
     return history;
   } else if (appended && appended.getMeta(historyKey)) {
-    if (appended.getMeta(historyKey).redo) return new HistoryState(history.done.addTransform(tr, undefined, options, mustPreserveItems(state)), history.undone, rangesFor(tr.mapping.maps[tr.steps.length - 1]), history.prevTime, history.prevComposition);else return new HistoryState(history.done, history.undone.addTransform(tr, undefined, options, mustPreserveItems(state)), null, history.prevTime, history.prevComposition);
+    if (appended.getMeta(historyKey).redo) return new HistoryState(history.done.addTransform(tr, undefined, options, mustPreserveItems(state)), history.undone, rangesFor(tr.mapping.maps), history.prevTime, history.prevComposition);else return new HistoryState(history.done, history.undone.addTransform(tr, undefined, options, mustPreserveItems(state)), null, history.prevTime, history.prevComposition);
   } else if (tr.getMeta("addToHistory") !== false && !(appended && appended.getMeta("addToHistory") === false)) {
     var composition = tr.getMeta("composition");
     var newGroup = history.prevTime == 0 || !appended && history.prevComposition != composition && (history.prevTime < (tr.time || 0) - options.newGroupDelay || !isAdjacentTo(tr, history.prevRanges));
-    var prevRanges = appended ? mapRanges(history.prevRanges, tr.mapping) : rangesFor(tr.mapping.maps[tr.steps.length - 1]);
+    var prevRanges = appended ? mapRanges(history.prevRanges, tr.mapping) : rangesFor(tr.mapping.maps);
     return new HistoryState(history.done.addTransform(tr, newGroup ? state.selection.getBookmark() : undefined, options, mustPreserveItems(state)), Branch.empty, prevRanges, tr.time, composition == null ? history.prevComposition : composition);
   } else if (rebased = tr.getMeta("rebased")) {
     return new HistoryState(history.done.rebased(tr, rebased), history.undone.rebased(tr, rebased), mapRanges(history.prevRanges, tr.mapping), history.prevTime, history.prevComposition);
@@ -275,9 +264,9 @@ function isAdjacentTo(transform, prevRanges) {
   });
   return adjacent;
 }
-function rangesFor(map) {
+function rangesFor(maps) {
   var result = [];
-  map.forEach(function (_from, _to, from, to) {
+  for (var i = maps.length - 1; i >= 0 && result.length == 0; i--) maps[i].forEach(function (_from, _to, from, to) {
     return result.push(from, to);
   });
   return result;
@@ -292,18 +281,18 @@ function mapRanges(ranges, mapping) {
   }
   return result;
 }
-function histTransaction(history, state, dispatch, redo) {
+function histTransaction(history, state, redo) {
   var preserveItems = mustPreserveItems(state);
   var histOptions = historyKey.get(state).spec.config;
   var pop = (redo ? history.undone : history.done).popEvent(state, preserveItems);
-  if (!pop) return;
+  if (!pop) return null;
   var selection = pop.selection.resolve(pop.transform.doc);
   var added = (redo ? history.done : history.undone).addTransform(pop.transform, state.selection.getBookmark(), histOptions, preserveItems);
   var newHist = new HistoryState(redo ? added : pop.remaining, redo ? pop.remaining : added, null, 0, -1);
-  dispatch(pop.transform.setSelection(selection).setMeta(historyKey, {
+  return pop.transform.setSelection(selection).setMeta(historyKey, {
     redo: redo,
     historyState: newHist
-  }).scrollIntoView());
+  });
 }
 var cachedPreserveItems = false,
   cachedPreserveItemsPlugins = null;
@@ -346,7 +335,7 @@ function history() {
         beforeinput: function beforeinput(view, e) {
           var inputType = e.inputType;
           var command = inputType == "historyUndo" ? undo : inputType == "historyRedo" ? redo : null;
-          if (!command) return false;
+          if (!command || !view.editable) return false;
           e.preventDefault();
           return command(view.state, view.dispatch);
         }
@@ -354,18 +343,21 @@ function history() {
     }
   });
 }
-var undo = function undo(state, dispatch) {
-  var hist = historyKey.getState(state);
-  if (!hist || hist.done.eventCount == 0) return false;
-  if (dispatch) histTransaction(hist, state, dispatch, false);
-  return true;
-};
-var redo = function redo(state, dispatch) {
-  var hist = historyKey.getState(state);
-  if (!hist || hist.undone.eventCount == 0) return false;
-  if (dispatch) histTransaction(hist, state, dispatch, true);
-  return true;
-};
+function buildCommand(redo, scroll) {
+  return function (state, dispatch) {
+    var hist = historyKey.getState(state);
+    if (!hist || (redo ? hist.undone : hist.done).eventCount == 0) return false;
+    if (dispatch) {
+      var tr = histTransaction(hist, state, redo);
+      if (tr) dispatch(scroll ? tr.scrollIntoView() : tr);
+    }
+    return true;
+  };
+}
+var undo = buildCommand(false, true);
+var redo = buildCommand(true, true);
+var undoNoScroll = buildCommand(false, false);
+var redoNoScroll = buildCommand(true, false);
 function undoDepth(state) {
   var hist = historyKey.getState(state);
   return hist ? hist.done.eventCount : 0;
@@ -390,5 +382,7 @@ exports.history = history;
 exports.historyKey = historyKey;
 exports.redo = redo;
 exports.redoDepth = redoDepth;
+exports.redoNoScroll = redoNoScroll;
 exports.undo = undo;
 exports.undoDepth = undoDepth;
+exports.undoNoScroll = undoNoScroll;
