@@ -269,7 +269,7 @@ function applyTransaction(history: HistoryState, state: EditorState, tr: Transac
   } else if (appended && appended.getMeta(historyKey)) {
     if (appended.getMeta(historyKey).redo)
       return new HistoryState(history.done.addTransform(tr, undefined, options, mustPreserveItems(state)),
-                              history.undone, rangesFor(tr.mapping.maps[tr.steps.length - 1]),
+                              history.undone, rangesFor(tr.mapping.maps),
                               history.prevTime, history.prevComposition)
     else
       return new HistoryState(history.done, history.undone.addTransform(tr, undefined, options, mustPreserveItems(state)),
@@ -280,7 +280,7 @@ function applyTransaction(history: HistoryState, state: EditorState, tr: Transac
     let newGroup = history.prevTime == 0 ||
       (!appended && history.prevComposition != composition &&
        (history.prevTime < (tr.time || 0) - options.newGroupDelay || !isAdjacentTo(tr, history.prevRanges!)))
-    let prevRanges = appended ? mapRanges(history.prevRanges!, tr.mapping) : rangesFor(tr.mapping.maps[tr.steps.length - 1])
+    let prevRanges = appended ? mapRanges(history.prevRanges!, tr.mapping) : rangesFor(tr.mapping.maps)
     return new HistoryState(history.done.addTransform(tr, newGroup ? state.selection.getBookmark() : undefined,
                                                       options, mustPreserveItems(state)),
                             Branch.empty, prevRanges, tr.time, composition == null ? history.prevComposition : composition)
@@ -309,9 +309,10 @@ function isAdjacentTo(transform: Transform, prevRanges: readonly number[]) {
   return adjacent
 }
 
-function rangesFor(map: StepMap) {
+function rangesFor(maps: readonly StepMap[]) {
   let result: number[] = []
-  map.forEach((_from, _to, from, to) => result.push(from, to))
+  for (let i = maps.length - 1; i >= 0 && result.length == 0; i--)
+    maps[i].forEach((_from, _to, from, to) => result.push(from, to))
   return result
 }
 
@@ -410,7 +411,7 @@ export function history(config: HistoryOptions = {}): Plugin {
         beforeinput(view, e: Event) {
           let inputType = (e as InputEvent).inputType
           let command = inputType == "historyUndo" ? undo : inputType == "historyRedo" ? redo : null
-          if (!command) return false
+          if (!command || !view.editable) return false
           e.preventDefault()
           return command(view.state, view.dispatch)
         }
